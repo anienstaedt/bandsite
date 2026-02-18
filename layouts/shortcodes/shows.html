@@ -1,1 +1,43 @@
-{{ partial "show-dates.html" . }}
+<div id="show-dates">
+  <p>Loading shows...</p>
+</div>
+
+<script>
+  const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSKWlruB7DA6yWZubcXVCktj3m9OuJhQ4m8i-rGlFszFo_0iUkcCdLvupwyOCyNyplZmJDnknsybLTO/pub?gid=0&single=true&output=csv";
+
+  function parseCSVRow(row) {
+    const result = [];
+    let current = "";
+    let inQuotes = false;
+    for (let i = 0; i < row.length; i++) {
+      if (row[i] === '"') {
+        inQuotes = !inQuotes;
+      } else if (row[i] === "," && !inQuotes) {
+        result.push(current.trim());
+        current = "";
+      } else {
+        current += row[i];
+      }
+    }
+    result.push(current.trim());
+    return result;
+  }
+
+  fetch(SHEET_URL)
+    .then(r => r.text())
+    .then(csv => {
+      const rows = csv.trim().split("\n").slice(1);
+      if (!rows.length || rows[0] === "") {
+        document.getElementById("show-dates").innerHTML = "<p>No upcoming shows.</p>";
+        return;
+      }
+      const html = rows.map(row => {
+        const [date, time, venue, city] = parseCSVRow(row);
+        return `<p><strong>${date}</strong> ${time ? `· ${time}` : ""} — ${venue}, ${city}</p>`;
+      }).join("");
+      document.getElementById("show-dates").innerHTML = html;
+    })
+    .catch(() => {
+      document.getElementById("show-dates").innerHTML = "<p>Could not load shows.</p>";
+    });
+</script>

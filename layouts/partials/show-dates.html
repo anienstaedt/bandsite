@@ -14,8 +14,8 @@
         return;
       }
       const html = rows.map(row => {
-        const [date, venue, city] = row.split(",").map(s => s.trim().replace(/^"|"$/g, ""));
-        return `<p><strong>${date}</strong> — ${venue}, ${city}</p>`;
+        const [date, time, venue, city] = row.split(",").map(s => s.trim().replace(/^"|"$/g, ""));
+        return `<p><strong>${date}</strong> ${time ? `· ${time}` : ""} — ${venue}, ${city}</p>`;
       }).join("");
       document.getElementById("show-dates").innerHTML = html;
     })
