@@ -1,6 +1,6 @@
 {
   "name": "hugo-bearblog",
-  "private": true,
+  "private": false,
   "version": "1.0.0",
   "description": "🧸 A [Hugo](https://gohugo.io/)-theme based on [Bear Blog](https://bearblog.dev).",
   "main": "index.js",

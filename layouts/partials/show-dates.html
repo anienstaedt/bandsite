@@ -1,0 +1,25 @@
+<div id="show-dates">
+  <p>Loading shows...</p>
+</div>
+
+<script>
+  const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSKWlruB7DA6yWZubcXVCktj3m9OuJhQ4m8i-rGlFszFo_0iUkcCdLvupwyOCyNyplZmJDnknsybLTO/pub?output=csv";
+
+  fetch(SHEET_URL)
+    .then(r => r.text())
+    .then(csv => {
+      const rows = csv.trim().split("\n").slice(1);
+      if (!rows.length || rows[0] === "") {
+        document.getElementById("show-dates").innerHTML = "<p>No upcoming shows.</p>";
+        return;
+      }
+      const html = rows.map(row => {
+        const [date, venue, city] = row.split(",").map(s => s.trim().replace(/^"|"$/g, ""));
+        return `<p><strong>${date}</strong> — ${venue}, ${city}</p>`;
+      }).join("");
+      document.getElementById("show-dates").innerHTML = html;
+    })
+    .catch(() => {
+      document.getElementById("show-dates").innerHTML = "<p>Could not load shows.</p>";
+    });
+</script>
